@@ -14,25 +14,27 @@ This is a comprehensive automation testing framework for both API and UI Web tes
 
 ## Project Structure
 
-`
+```
 automation-testing-framework/
-+-- src/
-�   +-- main/
-�   �   +-- java/
-�   �   �   +-- com/azka/
-�   �   �       +-- api/
-�   �   �       +-- ui/
-�   �   �       +-- util/
-�   �   +-- resources/
-�   +-- test/
-�       +-- java/
-�       �   +-- com/azka/
-�       �       +-- api/
-�       �       +-- ui/
-�       +-- resources/
-+-- .github/
-    +-- workflows/
-`
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── azka/
+│   │   │           ├── api/       # API Testing helpers
+│   │   │           ├── ui/        # UI Testing helpers
+│   │   │           └── util/      # Utility classes
+│   │   └── resources/            # Configuration files
+│   └── test/
+│       ├── java/
+│       │   └── com/
+│       │       └── azka/
+│       │           ├── api/      # API Tests
+│       │           └── ui/       # UI Tests
+│       └── resources/           # Test resources
+└── .github/
+    └── workflows/               # CI/CD pipelines
+```
 
 ## Getting Started
 
