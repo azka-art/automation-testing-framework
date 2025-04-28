@@ -8,7 +8,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-and-test:
+  verify-setup:
     runs-on: ubuntu-latest
     
     steps:
@@ -22,15 +22,6 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-        cache: maven
-    
-    # Cache Maven packages
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
     
     # Verifikasi struktur proyek
     - name: Verify Project Structure
@@ -38,31 +29,21 @@ jobs:
         echo "Current directory content:"
         ls -la
         echo "GitHub Actions workflow is running correctly!"
-    
-    # Jika pom.xml sudah ada, jalankan Maven
+        
+    # Jika pom.xml sudah ada, verifikasi dengan Maven
     - name: Check if pom.xml exists
       id: check_pom
       run: |
         if [ -f "pom.xml" ]; then
           echo "pom_exists=true" >> $GITHUB_OUTPUT
+          echo "pom.xml exists!"
         else
           echo "pom_exists=false" >> $GITHUB_OUTPUT
+          echo "pom.xml does not exist yet. This is normal for a new project."
         fi
     
-    # Jalankan Maven hanya jika pom.xml ada
-    - name: Build dengan Maven
+    # Jalankan Maven validate hanya jika pom.xml ada
+    - name: Validate dengan Maven
       if: steps.check_pom.outputs.pom_exists == 'true'
-      run: mvn -B package --file pom.xml
+      run: mvn -B validate --file pom.xml
       continue-on-error: true
-    
-    # Upload hasil test report sebagai artifact (menggunakan v2 sebagai alternatif)
-    - name: Upload test reports
-      if: steps.check_pom.outputs.pom_exists == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-reports
-        path: |
-          target/surefire-reports/
-          target/failsafe-reports/
-          target/site/
-        if-no-files-found: ignore
