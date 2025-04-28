@@ -1,0 +1,106 @@
+# Java .gitignore untuk Automation Testing Framework
+
+### Compiled class files
+*.class
+
+### Log files
+*.log
+logs/
+
+### BlueJ files
+*.ctxt
+
+### Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+### Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### JVM crash logs
+hs_err_pid*
+replay_pid*
+
+### Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+
+### IDE files - Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+### IDE files - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### IDE files - VS Code
+.vscode/
+.code-workspace
+
+### Test reports and outputs
+test-output/
+extent-reports/
+screenshots/
+allure-results/
+allure-report/
+
+### Browser driver binaries
+drivers/
+webdriver/
+*driver
+*driver.exe
+geckodriver*
+chromedriver*
+msedgedriver*
+
+### Test data that shouldn't be included in version control
+test-data/sensitive/
+
+### Environment specific files
+.env
+*.properties
+!src/main/resources/application.properties
+!src/test/resources/test.properties
+
+### OS specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+### Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+### Runtime data
+test-results/
+download/
+
+### Other testing frameworks
+.testng/
+.cucumber/
+.karate/
