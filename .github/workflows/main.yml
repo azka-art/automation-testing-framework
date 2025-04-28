@@ -1,6 +1,5 @@
 name: API dan UI Web CI/CD Pipeline
 
-# Trigger workflow pada push ke branch manapun atau pada pull request ke main/master
 on:
   push:
     branches: [ '*' ]
