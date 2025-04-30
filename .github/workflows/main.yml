@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  verify-setup:
+  build-and-test:
     runs-on: ubuntu-latest
     
     steps:
@@ -21,28 +21,50 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+        cache: maven
     
-    # Verifikasi struktur proyek
-    - name: Verify Project Structure
-      run: |
-        echo "Current directory content:"
-        ls -la
-        echo "GitHub Actions workflow is running correctly!"
-        
-    # Jika pom.xml sudah ada, verifikasi dengan Maven
-    - name: Check if pom.xml exists
-      id: check_pom
-      run: |
-        if [ -f "pom.xml" ]; then
-          echo "pom_exists=true" >> $GITHUB_OUTPUT
-          echo "pom.xml exists!"
-        else
-          echo "pom_exists=false" >> $GITHUB_OUTPUT
-          echo "pom.xml does not exist yet. This is normal for a new project."
-        fi
+    # Cache Maven packages
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
     
-    # Jalankan Maven validate hanya jika pom.xml ada
-    - name: Validate dengan Maven
-      if: steps.check_pom.outputs.pom_exists == 'true'
-      run: mvn -B validate --file pom.xml
+    # Membersihkan dan mem-build project dengan Maven
+    - name: Build dengan Maven
+      run: mvn clean compile
+      
+    # Jalankan API tests
+    - name: Run API tests
+      run: mvn test -Dgroups=api
       continue-on-error: true
+    
+    # Setup headless Chrome untuk UI tests
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@latest
+    
+    # Jalankan UI tests dengan headless Chrome
+    - name: Run UI tests
+      env:
+        DISPLAY: :99
+      run: |
+        sudo Xvfb :99 -screen 0 1920x1080x24 &
+        mvn test -Dgroups=ui -Dheadless=true
+      continue-on-error: true
+    
+    # Generate Allure report
+    - name: Generate Allure Report
+      run: mvn allure:report
+    
+    # Mengumpulkan dan mengupload report sebagai artifacts
+    - name: Upload test reports
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: test-reports
+        path: |
+          target/surefire-reports/
+          target/allure-results/
+          target/site/allure-maven-plugin/
+          target/site/
