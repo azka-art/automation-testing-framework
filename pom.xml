@@ -116,6 +116,10 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <headless>${headless}</headless>
+                    </systemPropertyVariables>
+                    <groups>${groups}</groups>
                 </configuration>
             </plugin>
             

@@ -13,11 +13,9 @@ import static org.testng.Assert.assertNotNull;
 public class ApiTest {
     private static final Logger log = LogManager.getLogger(ApiTest.class);
     
-    @BeforeClass
+    @BeforeClass(groups = {"api"})
     public void setup() {
         log.info("Setting up API tests");
-        
-        // Gunakan JSONPlaceholder sebagai service target untuk testing
         RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
     }
     
@@ -25,7 +23,6 @@ public class ApiTest {
     public void testGetEndpoint() {
         log.info("Running test: testGetEndpoint");
         
-        // Menggunakan JSONPlaceholder endpoint yang selalu tersedia
         Response response = RestAssured.given()
                 .get("/users/1");
         
@@ -40,14 +37,12 @@ public class ApiTest {
     public void testPostEndpoint() {
         log.info("Running test: testPostEndpoint");
         
-        // Test data
         String requestBody = "{"
             + "\"title\": \"foo\","
             + "\"body\": \"bar\","
             + "\"userId\": 1"
             + "}";
         
-        // Send POST request
         Response response = RestAssured.given()
                 .header("Content-type", "application/json")
                 .body(requestBody)

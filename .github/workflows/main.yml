@@ -1,4 +1,4 @@
-name: API dan UI Web CI/CD Pipeline
+﻿name: API dan UI Web CI/CD Pipeline
 
 on:
   push:
@@ -11,11 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    # Checkout kode dari repository
     - name: Checkout kode
       uses: actions/checkout@v3
     
-    # Setup Java environment
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
@@ -23,48 +21,44 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    # Cache Maven packages
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    
-    # Membersihkan dan mem-build project dengan Maven
     - name: Build dengan Maven
       run: mvn clean compile
       
-    # Jalankan API tests
-    - name: Run API tests
-      run: mvn test -Dgroups=api
-      continue-on-error: true
-    
-    # Setup headless Chrome untuk UI tests
     - name: Setup Chrome
       uses: browser-actions/setup-chrome@latest
     
-    # Jalankan UI tests dengan headless Chrome
-    - name: Run UI tests
+    - name: Install Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+    
+    - name: Run all tests
       env:
         DISPLAY: :99
       run: |
-        sudo Xvfb :99 -screen 0 1920x1080x24 &
-        mvn test -Dgroups=ui -Dheadless=true
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+        mvn test -Dheadless=true
       continue-on-error: true
     
-    # Generate Allure report
-    - name: Generate Allure Report
-      run: mvn allure:report
+    - name: Generate Test Report
+      if: always()
+      run: |
+        mvn surefire-report:report-only
+        mvn site -DgenerateReports=false
       continue-on-error: true
     
-    # Hapus penggunaan actions/upload-artifact dan gunakan cara alternatif
-    - name: Create test results directory
+    - name: Save test results
       if: always()
       run: |
         mkdir -p test-results
-        find target/surefire-reports -name "*.txt" -exec cp {} test-results/ \; 2>/dev/null || true
-        find target/allure-results -type f -exec cp {} test-results/ \; 2>/dev/null || true
-        find target/site -type f -name "*.html" -exec cp {} test-results/ \; 2>/dev/null || true
-        echo "Test results saved to test-results directory"
-        ls -la test-results || true
+        cp -R target/surefire-reports/* test-results/ || true
+        echo "Test results saved"
+        
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: test-results/
+        retention-days: 30
