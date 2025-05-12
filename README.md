@@ -175,6 +175,12 @@ mvn test -Dgroups=api
 mvn test -Dgroups=ui
 ```
 
+#### Menjalankan UI Tests dengan Headless Mode
+
+```bash
+mvn test -Dgroups=ui -Dheadless=true
+```
+
 ### Laporan Pengujian
 
 Laporan Allure dapat dihasilkan setelah menjalankan pengujian:
@@ -201,11 +207,14 @@ Lihat file `.github/workflows/main.yml` untuk detail konfigurasi.
 
 Konfigurasi utama tersedia di file `src/main/resources/config.properties`:
 
-- `api.baseUrl`: URL dasar untuk pengujian API
-- `ui.baseUrl`: URL dasar untuk pengujian UI Web
+- `api.baseUrl`: URL dasar untuk pengujian API (default: https://jsonplaceholder.typicode.com)
+- `ui.baseUrl`: URL dasar untuk pengujian UI Web (default: https://example.org)
 - `browser`: Browser untuk pengujian UI (chrome/firefox/edge)
 - `headless`: Mode headless untuk pengujian UI (true/false)
-- `timeout.*`: Konfigurasi timeout
+- `timeout.implicit`: Timeout implisit (detik)
+- `timeout.explicit`: Timeout eksplisit (detik) 
+- `timeout.pageLoad`: Timeout page load (detik)
+- `api.key`: API key jika diperlukan
 
 ## Struktur Komponen Utama
 
@@ -234,6 +243,21 @@ Menghasilkan laporan pengujian:
 - **Allure Reports** - Laporan visual interaktif
 - **TestNG Reports** - Laporan standar TestNG
 
+## Troubleshooting
+
+### CDP Version Warning
+Jika muncul warning tentang CDP version saat menjalankan UI tests:
+```
+WARNING: Unable to find CDP implementation matching X
+```
+Ini adalah warning normal dan tidak mempengaruhi eksekusi test. CDP (Chrome DevTools Protocol) digunakan untuk fitur advanced yang tidak diperlukan untuk test dasar.
+
+### Headless Mode Issues
+Jika test gagal di headless mode, coba:
+1. Update Chrome/ChromeDriver ke versi terbaru
+2. Tambahkan arguments tambahan di ChromeOptions
+3. Periksa log untuk error spesifik
+
 ## Berkontribusi
 
 Kontribusi selalu disambut! Silakan ikuti langkah-langkah ini untuk berkontribusi:
@@ -247,3 +271,9 @@ Kontribusi selalu disambut! Silakan ikuti langkah-langkah ini untuk berkontribus
 ## Lisensi
 
 Didistribusikan di bawah Lisensi MIT. Lihat `LICENSE` untuk informasi lebih lanjut.
+
+## Kontak
+
+Azka Nur Fathoni - [@azka-art](https://github.com/azka-art)
+
+Project Link: [https://github.com/azka-art/automation-testing-framework](https://github.com/azka-art/automation-testing-framework)
