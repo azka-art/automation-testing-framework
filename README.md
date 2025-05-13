@@ -42,7 +42,8 @@ automation-testing-framework/
     └── workflows/               # Pipeline CI/CD
         ├── api-tests.yml       # Workflow untuk API tests
         ├── web-ui-tests.yml    # Workflow untuk UI tests
-        └── all-tests.yml       # Workflow gabungan dengan GitHub Pages
+        ├── all-tests.yml       # Workflow gabungan dengan GitHub Pages
+        └── setup-pages.yml     # Workflow untuk setup GitHub Pages
 ```
 
 ## Visualisasi Framework
@@ -222,41 +223,57 @@ Laporan akan tersedia di:
 
 ## Integrasi CI/CD
 
-Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi pengujian secara berkelanjutan. Terdapat 3 workflow yang tersedia:
+Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi pengujian secara berkelanjutan. Terdapat 4 workflow yang tersedia:
 
 ### 1. API Tests Workflow (`api-tests.yml`)
 - Menjalankan hanya pengujian API
 - Trigger pada setiap push dan pull request
 - Upload test results sebagai artifacts
+- Deploy report ke GitHub Pages di folder `api-tests/`
 
 ### 2. Web UI Tests Workflow (`web-ui-tests.yml`)
 - Menjalankan hanya pengujian UI Web
 - Setup Chrome untuk headless testing
 - Upload test results sebagai artifacts
+- Deploy report ke GitHub Pages di folder `web-ui-tests/`
 
 ### 3. All Tests Workflow (`all-tests.yml`)
 - Menjalankan semua pengujian (API + UI)
 - Deploy hasil test ke GitHub Pages (hanya di branch main)
 - Membuat combined report dengan navigasi
 
+### 4. Setup Pages Workflow (`setup-pages.yml`)
+- Initialize GitHub Pages branch
+- Setup awal untuk deployment
+- Trigger manual atau pada push ke main
+
 ## GitHub Pages Setup
 
-Untuk mengaktifkan publikasi test reports ke GitHub Pages:
+Reports dapat diakses di: `https://azka-art.github.io/automation-testing-framework/`
 
-1. **Buat Personal Access Token (PAT)**:
-   - Settings → Developer settings → Personal access tokens
-   - Generate new token dengan permission `repo` dan `workflow`
+### Update Repository Settings
 
-2. **Setup Secret di Repository**:
-   - Repository Settings → Secrets → Actions
-   - Tambahkan secret bernama `PAT` dengan value token yang dibuat
+1. **Update Workflow Permissions**:
+   - Repository Settings → Actions → General
+   - Under "Workflow permissions", pilih "Read and write permissions"
+   - Check "Allow GitHub Actions to create and approve pull requests"
+   - Click Save
 
-3. **Enable GitHub Pages**:
+2. **Enable GitHub Pages**:
    - Repository Settings → Pages
    - Source: Deploy from a branch
    - Branch: gh-pages
+   - Folder: / (root)
+   - Click Save
 
-Reports akan dapat diakses di: `https://[username].github.io/[repository-name]/`
+### Struktur Report di GitHub Pages
+
+```
+https://azka-art.github.io/automation-testing-framework/
+├── api-tests/          # Report untuk API tests
+├── web-ui-tests/       # Report untuk UI tests
+└── index.html          # Main navigation page
+```
 
 ## Konfigurasi
 
@@ -282,13 +299,13 @@ api.key=YOUR_API_KEY_HERE
 
 ## Test Coverage
 
-### API Tests
+### API Tests (4 tests)
 - `testGetUserById`: GET user berdasarkan ID
 - `testGetAllUsers`: GET semua users
 - `testCreatePost`: POST create new post
 - `testUpdatePost`: PUT update existing post
 
-### UI Tests
+### UI Tests (4 tests)
 - `testNavigationToExampleDomain`: Navigasi ke halaman
 - `testExampleLinks`: Verifikasi links
 - `testPageContent`: Verifikasi content halaman
@@ -306,21 +323,21 @@ Bertanggung jawab untuk mengelola konfigurasi dan pengaturan framework:
 ### Helper Layer
 
 Menyediakan fungsionalitas umum yang digunakan oleh test:
-- **ApiHelper.java** - Metode bantuan untuk API testing
+- **ApiHelper.java** - Metode bantuan untuk API testing dengan REST Assured
 - **UiHelper.java** - Abstraksi Selenium WebDriver untuk UI testing
 
 ### Test Layer
 
-Berisi test case aktual:
+Berisi test case aktual dengan anotasi TestNG dan Allure:
 - **ApiTest.java** - Test case untuk API (4 tests)
 - **UiTest.java** - Test case untuk UI Web (4 tests)
 
 ### Reporting Layer
 
 Menghasilkan laporan pengujian:
-- **Allure Reports** - Laporan visual interaktif
-- **TestNG Reports** - Laporan standar TestNG
-- **GitHub Pages** - Publikasi report online
+- **Allure Reports** - Laporan visual interaktif dengan charts dan timeline
+- **TestNG Reports** - Laporan standar TestNG dalam format HTML
+- **GitHub Pages** - Publikasi report online yang dapat diakses publik
 
 ## Troubleshooting
 
@@ -342,6 +359,13 @@ Jika mendapat error `illegal character: '\ufeff'`:
 1. File Java tersimpan dengan BOM encoding
 2. Resave file dengan UTF-8 tanpa BOM
 3. Gunakan script cleanup yang disediakan
+
+### GitHub Pages Deployment Issues
+Jika deployment ke GitHub Pages gagal:
+1. Pastikan workflow permissions sudah diset ke "Read and write"
+2. Check apakah branch `gh-pages` sudah dibuat
+3. Verify repository settings untuk GitHub Pages sudah benar
+4. Re-run workflow setelah fix permissions
 
 ## Berkontribusi
 
@@ -370,3 +394,4 @@ Project Link: [https://github.com/azka-art/automation-testing-framework](https:/
 - [TestNG](https://testng.org/) - Test Framework
 - [Allure](https://docs.qameta.io/allure/) - Test Reporting
 - [GitHub Actions](https://github.com/features/actions) - CI/CD Platform
+- [GitHub Pages](https://pages.github.com/) - Static Site Hosting
