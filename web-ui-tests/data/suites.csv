@@ -1,0 +1,5 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue May 13 07:05:32 UTC 2025","Tue May 13 07:05:32 UTC 2025","96","Automation Testing Suite","All Tests","com.azka.ui.UiTest","com.azka.ui.UiTest","testPageContent","testPageContent","Test verifikasi content pada halaman Example Domain"
+"passed","Tue May 13 07:05:33 UTC 2025","Tue May 13 07:05:33 UTC 2025","132","Automation Testing Suite","All Tests","com.azka.ui.UiTest","com.azka.ui.UiTest","testPageStructure","testPageStructure","Test verifikasi struktur halaman Example Domain"
+"passed","Tue May 13 07:05:31 UTC 2025","Tue May 13 07:05:31 UTC 2025","291","Automation Testing Suite","All Tests","com.azka.ui.UiTest","com.azka.ui.UiTest","testExampleLinks","testExampleLinks","Test verifikasi links pada halaman Example Domain"
+"passed","Tue May 13 07:05:32 UTC 2025","Tue May 13 07:05:32 UTC 2025","269","Automation Testing Suite","All Tests","com.azka.ui.UiTest","com.azka.ui.UiTest","testNavigationToExampleDomain","testNavigationToExampleDomain","Test navigasi ke Example Domain dan verifikasi title"
