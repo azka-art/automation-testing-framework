@@ -7,7 +7,7 @@ on:
     branches: [ 'main' ]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -131,7 +131,7 @@ jobs:
     # Archive all test results
     - name: Archive all test results
       if: always()
-      uses: actions/upload-artifact@v4.3.0
+      uses: actions/upload-artifact@v4
       with:
         name: all-test-reports
         path: target/combined-reports/
@@ -140,7 +140,7 @@ jobs:
     # Archive logs
     - name: Archive logs
       if: always()
-      uses: actions/upload-artifact@v4.3.0
+      uses: actions/upload-artifact@v4
       with:
         name: test-logs
         path: logs/
@@ -149,9 +149,9 @@ jobs:
     # Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
       if: always() && github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v4.0.0
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        personal_token: ${{ secrets.PAT }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: target/combined-reports/
     
     # Test summary
@@ -174,3 +174,5 @@ jobs:
           ui_failed=$(find target/combined-reports/ui -name "TEST-*.xml" -exec grep -oP 'failures="\K[0-9]+' {} \; | paste -sd+ | bc)
           echo "✅ Total: $ui_tests | ❌ Failed: $ui_failed" >> $GITHUB_STEP_SUMMARY
         fi
+
+

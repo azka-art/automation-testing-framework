@@ -63,7 +63,7 @@ jobs:
     # Upload test results
     - name: Upload Test Results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: api-test-results
         path: |
@@ -74,7 +74,7 @@ jobs:
     # Upload Allure reports
     - name: Upload Allure Reports
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: api-allure-reports
         path: |
@@ -84,7 +84,7 @@ jobs:
     # Upload logs
     - name: Upload Logs
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: api-logs
         path: |
@@ -94,9 +94,9 @@ jobs:
     # Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
       if: always()
-      uses: peaceiris/actions-gh-pages@v4.0.0
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        personal_token: ${{ secrets.PAT }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: target/site/allure-maven-plugin/
         destination_dir: api-tests
     
@@ -118,3 +118,4 @@ jobs:
         else
           echo "❌ No test reports found" >> $GITHUB_STEP_SUMMARY
         fi
+
