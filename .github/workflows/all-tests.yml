@@ -1,0 +1,176 @@
+﻿name: All Tests CI/CD Pipeline with GitHub Pages
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  run-all-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # Setup Java environment
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4.0.0
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    
+    # Setup Chrome with extra capabilities
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@v1.4.0
+      with:
+        chrome-version: latest
+        
+    # Cache Maven packages
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    
+    # Build project with Maven
+    - name: Build with Maven
+      run: mvn clean compile
+      
+    # Run API tests
+    - name: Run API tests
+      run: mvn test -Dgroups=api
+      continue-on-error: true
+      
+    # Copy API test results
+    - name: Copy API test results
+      if: always()
+      run: |
+        mkdir -p target/combined-reports/api
+        cp -r target/surefire-reports/* target/combined-reports/api/ || true
+        cp -r target/site/allure-maven-plugin/* target/combined-reports/api/ || true
+    
+    # Clean target for UI tests
+    - name: Clean for UI tests
+      run: mvn clean
+    
+    # Install Xvfb for headless operation
+    - name: Install Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+    
+    # Run Web UI tests
+    - name: Run Web UI tests
+      env:
+        DISPLAY: :99
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+        mvn test -Dgroups=ui -Dheadless=true
+      continue-on-error: true
+    
+    # Copy UI test results
+    - name: Copy UI test results
+      if: always()
+      run: |
+        mkdir -p target/combined-reports/ui
+        cp -r target/surefire-reports/* target/combined-reports/ui/ || true
+        cp -r target/site/allure-maven-plugin/* target/combined-reports/ui/ || true
+    
+    # Generate Allure Report for all tests
+    - name: Generate Combined Allure Report
+      if: always()
+      run: |
+        mvn allure:aggregate || true
+    
+    # Create index.html for navigation
+    - name: Create Index Page
+      if: always()
+      run: |
+        cat << 'EOF' > target/combined-reports/index.html
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Test Reports</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                h1 { color: #333; }
+                .report-links { margin: 20px 0; }
+                .report-links a { 
+                    display: inline-block; 
+                    margin: 10px; 
+                    padding: 10px 20px; 
+                    background-color: #007bff; 
+                    color: white; 
+                    text-decoration: none; 
+                    border-radius: 5px; 
+                }
+                .report-links a:hover { background-color: #0056b3; }
+            </style>
+        </head>
+        <body>
+            <h1>Automation Test Reports</h1>
+            <div class="report-links">
+                <a href="api/index.html">API Test Reports</a>
+                <a href="ui/index.html">UI Test Reports</a>
+            </div>
+        </body>
+        </html>
+        EOF
+    
+    # Archive all test results
+    - name: Archive all test results
+      if: always()
+      uses: actions/upload-artifact@v4.3.0
+      with:
+        name: all-test-reports
+        path: target/combined-reports/
+        retention-days: 30
+    
+    # Archive logs
+    - name: Archive logs
+      if: always()
+      uses: actions/upload-artifact@v4.3.0
+      with:
+        name: test-logs
+        path: logs/
+        retention-days: 7
+    
+    # Deploy to GitHub Pages
+    - name: Deploy to GitHub Pages
+      if: always() && github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v4.0.0
+      with:
+        personal_token: ${{ secrets.PAT }}
+        publish_dir: target/combined-reports/
+    
+    # Test summary
+    - name: Test Results Summary
+      if: always()
+      run: |
+        echo "### Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -d "target/combined-reports/api" ]; then
+          echo "#### API Tests" >> $GITHUB_STEP_SUMMARY
+          api_tests=$(find target/combined-reports/api -name "TEST-*.xml" -exec grep -oP 'tests="\K[0-9]+' {} \; | paste -sd+ | bc)
+          api_failed=$(find target/combined-reports/api -name "TEST-*.xml" -exec grep -oP 'failures="\K[0-9]+' {} \; | paste -sd+ | bc)
+          echo "✅ Total: $api_tests | ❌ Failed: $api_failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ -d "target/combined-reports/ui" ]; then
+          echo "#### UI Tests" >> $GITHUB_STEP_SUMMARY
+          ui_tests=$(find target/combined-reports/ui -name "TEST-*.xml" -exec grep -oP 'tests="\K[0-9]+' {} \; | paste -sd+ | bc)
+          ui_failed=$(find target/combined-reports/ui -name "TEST-*.xml" -exec grep -oP 'failures="\K[0-9]+' {} \; | paste -sd+ | bc)
+          echo "✅ Total: $ui_tests | ❌ Failed: $ui_failed" >> $GITHUB_STEP_SUMMARY
+        fi
