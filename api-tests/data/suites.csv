@@ -1,0 +1,5 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue May 13 07:05:26 UTC 2025","Tue May 13 07:05:26 UTC 2025","275","Automation Testing Suite","All Tests","com.azka.api.ApiTest","com.azka.api.ApiTest","testUpdatePost","testUpdatePost","Test PUT endpoint untuk update post"
+"passed","Tue May 13 07:05:24 UTC 2025","Tue May 13 07:05:26 UTC 2025","2246","Automation Testing Suite","All Tests","com.azka.api.ApiTest","com.azka.api.ApiTest","testCreatePost","testCreatePost","Test POST endpoint untuk membuat post baru"
+"passed","Tue May 13 07:05:26 UTC 2025","Tue May 13 07:05:26 UTC 2025","121","Automation Testing Suite","All Tests","com.azka.api.ApiTest","com.azka.api.ApiTest","testGetAllUsers","testGetAllUsers","Test GET endpoint untuk mendapatkan semua users"
+"passed","Tue May 13 07:05:26 UTC 2025","Tue May 13 07:05:26 UTC 2025","76","Automation Testing Suite","All Tests","com.azka.api.ApiTest","com.azka.api.ApiTest","testGetUserById","testGetUserById","Test GET endpoint untuk mendapatkan user berdasarkan ID"
