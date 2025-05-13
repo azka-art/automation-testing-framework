@@ -1,0 +1,29 @@
+﻿name: Setup GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  setup-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Pages branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git clone https://github.com/${{ github.repository }}.git temp-repo
+          cd temp-repo
+          git checkout -b gh-pages || git checkout gh-pages
+          echo "GitHub Pages branch setup" > README.md
+          git add .
+          git commit -m "Initialize GitHub Pages" || echo "No changes to commit"
+          git push origin gh-pages || echo "Branch already exists"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

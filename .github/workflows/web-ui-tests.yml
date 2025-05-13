@@ -7,9 +7,10 @@ on:
     branches: [ main, master ]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+  actions: read
 
 jobs:
   web-ui-test:
@@ -133,4 +134,5 @@ jobs:
         else
           echo "❌ No test reports found" >> $GITHUB_STEP_SUMMARY
         fi
+
 
