@@ -6,19 +6,19 @@ Sebuah framework otomatisasi pengujian komprehensif untuk pengujian API dan UI W
 [![Web UI Tests CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/web-ui-tests.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/web-ui-tests.yml)
 [![All Tests CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/all-tests.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/all-tests.yml)
 
-## Fitur
+## 🚀 Fitur
 
-- Pengujian API dengan REST Assured
-- Pengujian UI Web dengan Selenium WebDriver
-- Struktur modular dan mudah dipelihara
-- Manajemen konfigurasi yang fleksibel
-- Logging dengan Log4j2
-- Pelaporan hasil pengujian dengan Allure dan TestNG
-- Pengelolaan pengujian dengan TestNG
-- Integrasi CI/CD dengan GitHub Actions
-- Deployment otomatis ke GitHub Pages
+- ✅ Pengujian API dengan REST Assured
+- ✅ Pengujian UI Web dengan Selenium WebDriver
+- ✅ Struktur modular dan mudah dipelihara
+- ✅ Manajemen konfigurasi yang fleksibel
+- ✅ Logging dengan Log4j2
+- ✅ Pelaporan hasil pengujian dengan Allure dan TestNG
+- ✅ Pengelolaan pengujian dengan TestNG
+- ✅ Integrasi CI/CD dengan GitHub Actions
+- ✅ Deployment otomatis ke GitHub Pages
 
-## Struktur Proyek
+## 📁 Struktur Proyek
 
 ```
 automation-testing-framework/
@@ -31,6 +31,8 @@ automation-testing-framework/
 │   │   │           ├── ui/        # Helper untuk pengujian UI
 │   │   │           └── util/      # Utility classes
 │   │   └── resources/            # File konfigurasi
+│   │       ├── config.properties
+│   │       └── log4j2.xml
 │   └── test/
 │       ├── java/
 │       │   └── com/
@@ -38,6 +40,8 @@ automation-testing-framework/
 │       │           ├── api/      # Test API
 │       │           └── ui/       # Test UI
 │       └── resources/           # Resource pengujian
+│           ├── testng.xml
+│           └── allure.properties
 └── .github/
     └── workflows/               # Pipeline CI/CD
         ├── api-tests.yml       # Workflow untuk API tests
@@ -46,7 +50,7 @@ automation-testing-framework/
         └── setup-pages.yml     # Workflow untuk setup GitHub Pages
 ```
 
-## Visualisasi Framework
+## 🏗️ Visualisasi Framework
 
 ### Arsitektur Framework
 
@@ -60,6 +64,7 @@ graph TD
     B --> B1[ConfigManager.java]
     B --> B2[config.properties]
     B --> B3[log4j2.xml]
+    B --> B4[allure.properties]
     
     C --> C1[API Helpers]
     C --> C2[UI Helpers]
@@ -82,7 +87,7 @@ graph TD
     classDef testClass fill:#bfb,stroke:#333,stroke-width:2px;
     classDef reportClass fill:#fbb,stroke:#333,stroke-width:2px;
     
-    class B,B1,B2,B3 configClass;
+    class B,B1,B2,B3,B4 configClass;
     class C,C1,C2,C11,C21 helperClass;
     class D,D1,D2,D11,D21 testClass;
     class E,E1,E2,E3 reportClass;
@@ -97,6 +102,7 @@ sequenceDiagram
     participant T as TestNG
     participant A as API Test
     participant W as Web UI Test
+    participant AL as Allure
     participant R as Reporting
     participant G as GitHub Pages
     
@@ -104,17 +110,19 @@ sequenceDiagram
     M->>T: Execute TestNG Suite
     
     T->>A: Run API Tests
-    A->>A: Initialize REST Assured
+    A->>A: Initialize ApiHelper
     A->>A: Execute API Tests
+    A-->>AL: Generate Allure Results
     A-->>T: Return Test Results
     
     T->>W: Run UI Tests
-    W->>W: Initialize WebDriver
+    W->>W: Initialize UiHelper
     W->>W: Execute UI Tests
+    W-->>AL: Generate Allure Results
     W-->>T: Return Test Results
     
     T->>R: Generate Reports
-    R->>R: Create Allure Report
+    AL->>R: Create Allure Report
     R->>R: Create TestNG Report
     R->>G: Deploy to GitHub Pages
     R-->>U: Return Test Summary
@@ -139,12 +147,13 @@ graph LR
     H --> K[Run UI Tests]
     I --> L[Run All Tests]
     
-    J --> M[Generate Reports]
+    J --> M[Generate Allure Reports]
     K --> M
     L --> M
     
     M --> N[Upload Artifacts]
-    F --> O[Deploy to GitHub Pages]
+    M --> O[Generate Test Summary]
+    F --> P[Deploy to GitHub Pages]
     
     classDef gitClass fill:#f96,stroke:#333,stroke-width:2px;
     classDef buildClass fill:#9cf,stroke:#333,stroke-width:2px;
@@ -154,10 +163,10 @@ graph LR
     class A,B,C gitClass;
     class D,E,F,G,H,I buildClass;
     class J,K,L testClass;
-    class M,N,O reportClass;
+    class M,N,O,P reportClass;
 ```
 
-## Memulai
+## 🚀 Memulai
 
 ### Prasyarat
 
@@ -205,23 +214,74 @@ mvn test -Dgroups=ui
 mvn test -Dgroups=ui -Dheadless=true
 ```
 
-### Laporan Pengujian
+### 📊 Laporan Pengujian
+
+#### Laporan Allure (Recommended)
+```bash
+# Generate dan lihat report
+mvn allure:serve
+
+# Generate report saja
+mvn allure:report
+```
 
 #### Laporan Surefire (Default)
 ```bash
 mvn surefire-report:report-only
-```
-
-#### Laporan Allure
-```bash
-mvn allure:report
+mvn site -DgenerateReports=false
 ```
 
 Laporan akan tersedia di:
-- Surefire: `target/site/surefire-report.html`
 - Allure: `target/site/allure-maven-plugin/index.html`
+- Surefire: `target/site/surefire-report.html`
 
-## Integrasi CI/CD
+## 🔧 Konfigurasi
+
+### File Konfigurasi Utama
+
+#### `src/main/resources/config.properties`
+```properties
+# Base URLs
+api.baseUrl=https://jsonplaceholder.typicode.com
+ui.baseUrl=https://example.org
+
+# Browser Configuration
+browser=chrome
+headless=true
+
+# Timeouts in seconds
+timeout.implicit=10
+timeout.explicit=30
+timeout.pageLoad=60
+
+# API Keys (if needed)
+api.key=YOUR_API_KEY_HERE
+```
+
+#### `src/test/resources/allure.properties`
+```properties
+allure.results.directory=target/allure-results
+allure.link.issue.pattern=https://github.com/azka-art/automation-testing-framework/issues/{}
+allure.link.tms.pattern=https://github.com/azka-art/automation-testing-framework/issues/{}
+```
+
+#### `src/test/resources/testng.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Automation Testing Suite">
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+    <test name="All Tests">
+        <packages>
+            <package name="com.azka.*"/>
+        </packages>
+    </test>
+</suite>
+```
+
+## 🚦 Integrasi CI/CD
 
 Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi pengujian secara berkelanjutan. Terdapat 4 workflow yang tersedia:
 
@@ -229,12 +289,14 @@ Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi p
 - Menjalankan hanya pengujian API
 - Trigger pada setiap push dan pull request
 - Upload test results sebagai artifacts
+- Generate Allure reports
 - Deploy report ke GitHub Pages di folder `api-tests/`
 
 ### 2. Web UI Tests Workflow (`web-ui-tests.yml`)
 - Menjalankan hanya pengujian UI Web
 - Setup Chrome untuk headless testing
 - Upload test results sebagai artifacts
+- Generate Allure reports
 - Deploy report ke GitHub Pages di folder `web-ui-tests/`
 
 ### 3. All Tests Workflow (`all-tests.yml`)
@@ -247,7 +309,7 @@ Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi p
 - Setup awal untuk deployment
 - Trigger manual atau pada push ke main
 
-## GitHub Pages Setup
+## 🌐 GitHub Pages Setup
 
 Reports dapat diakses di: `https://azka-art.github.io/automation-testing-framework/`
 
@@ -275,29 +337,7 @@ https://azka-art.github.io/automation-testing-framework/
 └── index.html          # Main navigation page
 ```
 
-## Konfigurasi
-
-Konfigurasi utama tersedia di file `src/main/resources/config.properties`:
-
-```properties
-# Base URLs
-api.baseUrl=https://jsonplaceholder.typicode.com
-ui.baseUrl=https://example.org
-
-# Browser Configuration
-browser=chrome
-headless=true
-
-# Timeouts in seconds
-timeout.implicit=10
-timeout.explicit=30
-timeout.pageLoad=60
-
-# API Keys (if needed)
-api.key=YOUR_API_KEY_HERE
-```
-
-## Test Coverage
+## 📈 Test Coverage
 
 ### API Tests (4 tests)
 - `testGetUserById`: GET user berdasarkan ID
@@ -311,7 +351,7 @@ api.key=YOUR_API_KEY_HERE
 - `testPageContent`: Verifikasi content halaman
 - `testPageStructure`: Verifikasi struktur halaman
 
-## Struktur Komponen Utama
+## 🏛️ Struktur Komponen Utama
 
 ### Config Layer
 
@@ -319,6 +359,7 @@ Bertanggung jawab untuk mengelola konfigurasi dan pengaturan framework:
 - **ConfigManager.java** - Mengelola properti konfigurasi
 - **config.properties** - Menyimpan nilai konfigurasi
 - **log4j2.xml** - Mengonfigurasi logging
+- **allure.properties** - Konfigurasi Allure report
 
 ### Helper Layer
 
@@ -329,8 +370,8 @@ Menyediakan fungsionalitas umum yang digunakan oleh test:
 ### Test Layer
 
 Berisi test case aktual dengan anotasi TestNG dan Allure:
-- **ApiTest.java** - Test case untuk API (4 tests)
-- **UiTest.java** - Test case untuk UI Web (4 tests)
+- **ApiTest.java** - Test case untuk API (4 tests) dengan Allure annotations
+- **UiTest.java** - Test case untuk UI Web (4 tests) dengan Allure annotations
 
 ### Reporting Layer
 
@@ -339,7 +380,14 @@ Menghasilkan laporan pengujian:
 - **TestNG Reports** - Laporan standar TestNG dalam format HTML
 - **GitHub Pages** - Publikasi report online yang dapat diakses publik
 
-## Troubleshooting
+## 🐛 Troubleshooting
+
+### Allure Report Issues
+Jika Allure report tidak tergenerate:
+1. Pastikan `allure.properties` ada di `src/test/resources/`
+2. Cek TestNG listener di `testng.xml`
+3. Verify Maven plugin configuration di `pom.xml`
+4. Run dengan: `mvn clean test -Dallure.results.directory=target/allure-results`
 
 ### CDP Version Warning
 Jika muncul warning tentang CDP version saat menjalankan UI tests:
@@ -354,12 +402,6 @@ Jika test gagal di headless mode, coba:
 2. Tambahkan arguments tambahan di ChromeOptions
 3. Periksa log untuk error spesifik
 
-### BOM Issues
-Jika mendapat error `illegal character: '\ufeff'`:
-1. File Java tersimpan dengan BOM encoding
-2. Resave file dengan UTF-8 tanpa BOM
-3. Gunakan script cleanup yang disediakan
-
 ### GitHub Pages Deployment Issues
 Jika deployment ke GitHub Pages gagal:
 1. Pastikan workflow permissions sudah diset ke "Read and write"
@@ -367,7 +409,7 @@ Jika deployment ke GitHub Pages gagal:
 3. Verify repository settings untuk GitHub Pages sudah benar
 4. Re-run workflow setelah fix permissions
 
-## Berkontribusi
+## 🤝 Berkontribusi
 
 Kontribusi selalu disambut! Silakan ikuti langkah-langkah ini untuk berkontribusi:
 
@@ -377,17 +419,26 @@ Kontribusi selalu disambut! Silakan ikuti langkah-langkah ini untuk berkontribus
 4. Push ke branch (`git push origin feature/amazing-feature`)
 5. Buka Pull Request
 
-## Lisensi
+### Commit Message Guidelines
+Gunakan conventional commits format:
+- `feat:` untuk fitur baru
+- `fix:` untuk bug fixes
+- `docs:` untuk perubahan dokumentasi
+- `test:` untuk perubahan testing
+- `refactor:` untuk code refactoring
+- `chore:` untuk maintenance tasks
+
+## 📝 Lisensi
 
 Didistribusikan di bawah Lisensi MIT. Lihat `LICENSE` untuk informasi lebih lanjut.
 
-## Kontak
+## 📧 Kontak
 
 Azka Nur Fathoni - [@azka-art](https://github.com/azka-art)
 
 Project Link: [https://github.com/azka-art/automation-testing-framework](https://github.com/azka-art/automation-testing-framework)
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - [REST Assured](https://rest-assured.io/) - API Testing Framework
 - [Selenium WebDriver](https://www.selenium.dev/) - UI Testing Framework

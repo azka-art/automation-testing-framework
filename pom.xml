@@ -120,6 +120,10 @@
                         <headless>${headless}</headless>
                     </systemPropertyVariables>
                     <groups>${groups}</groups>
+                <systemPropertyVariables>
+                        <headless>${headless}</headless>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             
@@ -172,3 +176,4 @@
         </plugins>
     </build>
 </project>
+
