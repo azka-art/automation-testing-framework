@@ -2,62 +2,62 @@
 <testng-results ignored="0" total="4" passed="4" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-05-13T05:41:55 UTC" name="Automation Testing Suite" finished-at="2025-05-13T05:42:00 UTC" duration-ms="4420">
+  <suite started-at="2025-05-13T07:05:41 UTC" name="Automation Testing Suite" finished-at="2025-05-13T07:05:53 UTC" duration-ms="12282">
     <groups>
       <group name="ui">
-        <method signature="UiTest.testExampleLinks()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" name="testExampleLinks" class="com.azka.ui.UiTest"/>
-        <method signature="UiTest.testNavigationToExampleDomain()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" name="testNavigationToExampleDomain" class="com.azka.ui.UiTest"/>
-        <method signature="UiTest.testPageContent()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" name="testPageContent" class="com.azka.ui.UiTest"/>
-        <method signature="UiTest.testPageStructure()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" name="testPageStructure" class="com.azka.ui.UiTest"/>
+        <method signature="UiTest.testExampleLinks()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" name="testExampleLinks" class="com.azka.ui.UiTest"/>
+        <method signature="UiTest.testNavigationToExampleDomain()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" name="testNavigationToExampleDomain" class="com.azka.ui.UiTest"/>
+        <method signature="UiTest.testPageContent()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" name="testPageContent" class="com.azka.ui.UiTest"/>
+        <method signature="UiTest.testPageStructure()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" name="testPageStructure" class="com.azka.ui.UiTest"/>
       </group> <!-- ui -->
     </groups>
-    <test started-at="2025-05-13T05:41:55 UTC" name="All Tests" finished-at="2025-05-13T05:42:00 UTC" duration-ms="4420">
+    <test started-at="2025-05-13T07:05:41 UTC" name="All Tests" finished-at="2025-05-13T07:05:53 UTC" duration-ms="12282">
       <class name="com.azka.ui.UiTest">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:55 UTC" name="setup" finished-at="2025-05-13T05:41:57 UTC" duration-ms="2034" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:41 UTC" name="setup" finished-at="2025-05-13T07:05:51 UTC" duration-ms="9887" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="testExampleLinks()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:57 UTC" name="testExampleLinks" finished-at="2025-05-13T05:41:58 UTC" duration-ms="332" status="PASS">
+        <test-method signature="testExampleLinks()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:51 UTC" name="testExampleLinks" finished-at="2025-05-13T07:05:52 UTC" duration-ms="528" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testExampleLinks -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:58 UTC" name="tearDown" finished-at="2025-05-13T05:41:58 UTC" duration-ms="76" status="PASS">
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:52 UTC" name="tearDown" finished-at="2025-05-13T07:05:52 UTC" duration-ms="75" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:58 UTC" name="setup" finished-at="2025-05-13T05:41:58 UTC" duration-ms="375" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:52 UTC" name="setup" finished-at="2025-05-13T07:05:52 UTC" duration-ms="367" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="testNavigationToExampleDomain()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:58 UTC" name="testNavigationToExampleDomain" finished-at="2025-05-13T05:41:58 UTC" duration-ms="123" status="PASS">
+        <test-method signature="testNavigationToExampleDomain()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:52 UTC" name="testNavigationToExampleDomain" finished-at="2025-05-13T07:05:52 UTC" duration-ms="133" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testNavigationToExampleDomain -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:58 UTC" name="tearDown" finished-at="2025-05-13T05:41:58 UTC" duration-ms="69" status="PASS">
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:52 UTC" name="tearDown" finished-at="2025-05-13T07:05:52 UTC" duration-ms="70" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:58 UTC" name="setup" finished-at="2025-05-13T05:41:59 UTC" duration-ms="331" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:52 UTC" name="setup" finished-at="2025-05-13T07:05:53 UTC" duration-ms="295" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="testPageContent()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:59 UTC" name="testPageContent" finished-at="2025-05-13T05:41:59 UTC" duration-ms="279" status="PASS">
+        <test-method signature="testPageContent()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:53 UTC" name="testPageContent" finished-at="2025-05-13T07:05:53 UTC" duration-ms="109" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testPageContent -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:59 UTC" name="tearDown" finished-at="2025-05-13T05:41:59 UTC" duration-ms="70" status="PASS">
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:53 UTC" name="tearDown" finished-at="2025-05-13T07:05:53 UTC" duration-ms="70" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:59 UTC" name="setup" finished-at="2025-05-13T05:41:59 UTC" duration-ms="264" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:53 UTC" name="setup" finished-at="2025-05-13T07:05:53 UTC" duration-ms="273" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="testPageStructure()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:59 UTC" name="testPageStructure" finished-at="2025-05-13T05:41:59 UTC" duration-ms="314" status="PASS">
+        <test-method signature="testPageStructure()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:53 UTC" name="testPageStructure" finished-at="2025-05-13T07:05:53 UTC" duration-ms="330" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testPageStructure -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@2289aca5]" started-at="2025-05-13T05:41:59 UTC" name="tearDown" finished-at="2025-05-13T05:42:00 UTC" duration-ms="70" status="PASS">
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.azka.ui.UiTest@1849db1a]" started-at="2025-05-13T07:05:53 UTC" name="tearDown" finished-at="2025-05-13T07:05:53 UTC" duration-ms="70" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
