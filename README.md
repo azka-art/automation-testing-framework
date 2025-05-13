@@ -2,7 +2,9 @@
 
 Sebuah framework otomatisasi pengujian komprehensif untuk pengujian API dan UI Web yang dibangun dengan Java.
 
-[![API dan UI Web CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/main.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/main.yml)
+[![API Tests CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/api-tests.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/api-tests.yml)
+[![Web UI Tests CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/web-ui-tests.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/web-ui-tests.yml)
+[![All Tests CI/CD Pipeline](https://github.com/azka-art/automation-testing-framework/actions/workflows/all-tests.yml/badge.svg)](https://github.com/azka-art/automation-testing-framework/actions/workflows/all-tests.yml)
 
 ## Fitur
 
@@ -11,9 +13,10 @@ Sebuah framework otomatisasi pengujian komprehensif untuk pengujian API dan UI W
 - Struktur modular dan mudah dipelihara
 - Manajemen konfigurasi yang fleksibel
 - Logging dengan Log4j2
-- Pelaporan hasil pengujian dengan Allure
+- Pelaporan hasil pengujian dengan Allure dan TestNG
 - Pengelolaan pengujian dengan TestNG
 - Integrasi CI/CD dengan GitHub Actions
+- Deployment otomatis ke GitHub Pages
 
 ## Struktur Proyek
 
@@ -37,6 +40,9 @@ automation-testing-framework/
 │       └── resources/           # Resource pengujian
 └── .github/
     └── workflows/               # Pipeline CI/CD
+        ├── api-tests.yml       # Workflow untuk API tests
+        ├── web-ui-tests.yml    # Workflow untuk UI tests
+        └── all-tests.yml       # Workflow gabungan dengan GitHub Pages
 ```
 
 ## Visualisasi Framework
@@ -68,6 +74,7 @@ graph TD
     
     E --> E1[Allure Reports]
     E --> E2[TestNG Reports]
+    E --> E3[GitHub Pages Reports]
     
     classDef configClass fill:#f9f,stroke:#333,stroke-width:2px;
     classDef helperClass fill:#bbf,stroke:#333,stroke-width:2px;
@@ -77,7 +84,7 @@ graph TD
     class B,B1,B2,B3 configClass;
     class C,C1,C2,C11,C21 helperClass;
     class D,D1,D2,D11,D21 testClass;
-    class E,E1,E2 reportClass;
+    class E,E1,E2,E3 reportClass;
 ```
 
 ### Alur Eksekusi Test
@@ -90,6 +97,7 @@ sequenceDiagram
     participant A as API Test
     participant W as Web UI Test
     participant R as Reporting
+    participant G as GitHub Pages
     
     U->>M: mvn test
     M->>T: Execute TestNG Suite
@@ -106,6 +114,8 @@ sequenceDiagram
     
     T->>R: Generate Reports
     R->>R: Create Allure Report
+    R->>R: Create TestNG Report
+    R->>G: Deploy to GitHub Pages
     R-->>U: Return Test Summary
 ```
 
@@ -114,23 +124,36 @@ sequenceDiagram
 ```mermaid
 graph LR
     A[Code Push] --> B[GitHub Actions Triggered]
-    B --> C[Setup JDK & Maven]
-    C --> D[Build Project]
-    D --> E[Run API Tests]
-    E --> F[Setup Chrome]
-    F --> G[Run UI Tests]
-    G --> H[Generate Reports]
-    H --> I[Upload Artifacts]
+    B --> C{Which Workflow?}
+    
+    C --> D[API Tests]
+    C --> E[Web UI Tests]
+    C --> F[All Tests]
+    
+    D --> G[Setup JDK & Maven]
+    E --> H[Setup JDK, Maven & Chrome]
+    F --> I[Setup Full Environment]
+    
+    G --> J[Run API Tests]
+    H --> K[Run UI Tests]
+    I --> L[Run All Tests]
+    
+    J --> M[Generate Reports]
+    K --> M
+    L --> M
+    
+    M --> N[Upload Artifacts]
+    F --> O[Deploy to GitHub Pages]
     
     classDef gitClass fill:#f96,stroke:#333,stroke-width:2px;
     classDef buildClass fill:#9cf,stroke:#333,stroke-width:2px;
     classDef testClass fill:#9f9,stroke:#333,stroke-width:2px;
     classDef reportClass fill:#f9f,stroke:#333,stroke-width:2px;
     
-    class A,B gitClass;
-    class C,D buildClass;
-    class E,F,G testClass;
-    class H,I reportClass;
+    class A,B,C gitClass;
+    class D,E,F,G,H,I buildClass;
+    class J,K,L testClass;
+    class M,N,O reportClass;
 ```
 
 ## Memulai
@@ -183,38 +206,93 @@ mvn test -Dgroups=ui -Dheadless=true
 
 ### Laporan Pengujian
 
-Laporan Allure dapat dihasilkan setelah menjalankan pengujian:
+#### Laporan Surefire (Default)
+```bash
+mvn surefire-report:report-only
+```
 
+#### Laporan Allure
 ```bash
 mvn allure:report
 ```
 
-Laporan akan tersedia di `target/site/allure-maven-plugin/`.
+Laporan akan tersedia di:
+- Surefire: `target/site/surefire-report.html`
+- Allure: `target/site/allure-maven-plugin/index.html`
 
 ## Integrasi CI/CD
 
-Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi pengujian secara berkelanjutan. Pipeline dikonfigurasi untuk:
+Framework ini terintegrasi dengan GitHub Actions untuk menjalankan otomatisasi pengujian secara berkelanjutan. Terdapat 3 workflow yang tersedia:
 
-1. Membangun proyek
-2. Menjalankan pengujian API
-3. Menjalankan pengujian UI dengan Chrome dalam mode headless
-4. Menghasilkan laporan pengujian
-5. Menyimpan laporan sebagai artifacts
+### 1. API Tests Workflow (`api-tests.yml`)
+- Menjalankan hanya pengujian API
+- Trigger pada setiap push dan pull request
+- Upload test results sebagai artifacts
 
-Lihat file `.github/workflows/main.yml` untuk detail konfigurasi.
+### 2. Web UI Tests Workflow (`web-ui-tests.yml`)
+- Menjalankan hanya pengujian UI Web
+- Setup Chrome untuk headless testing
+- Upload test results sebagai artifacts
+
+### 3. All Tests Workflow (`all-tests.yml`)
+- Menjalankan semua pengujian (API + UI)
+- Deploy hasil test ke GitHub Pages (hanya di branch main)
+- Membuat combined report dengan navigasi
+
+## GitHub Pages Setup
+
+Untuk mengaktifkan publikasi test reports ke GitHub Pages:
+
+1. **Buat Personal Access Token (PAT)**:
+   - Settings → Developer settings → Personal access tokens
+   - Generate new token dengan permission `repo` dan `workflow`
+
+2. **Setup Secret di Repository**:
+   - Repository Settings → Secrets → Actions
+   - Tambahkan secret bernama `PAT` dengan value token yang dibuat
+
+3. **Enable GitHub Pages**:
+   - Repository Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: gh-pages
+
+Reports akan dapat diakses di: `https://[username].github.io/[repository-name]/`
 
 ## Konfigurasi
 
 Konfigurasi utama tersedia di file `src/main/resources/config.properties`:
 
-- `api.baseUrl`: URL dasar untuk pengujian API (default: https://jsonplaceholder.typicode.com)
-- `ui.baseUrl`: URL dasar untuk pengujian UI Web (default: https://example.org)
-- `browser`: Browser untuk pengujian UI (chrome/firefox/edge)
-- `headless`: Mode headless untuk pengujian UI (true/false)
-- `timeout.implicit`: Timeout implisit (detik)
-- `timeout.explicit`: Timeout eksplisit (detik) 
-- `timeout.pageLoad`: Timeout page load (detik)
-- `api.key`: API key jika diperlukan
+```properties
+# Base URLs
+api.baseUrl=https://jsonplaceholder.typicode.com
+ui.baseUrl=https://example.org
+
+# Browser Configuration
+browser=chrome
+headless=true
+
+# Timeouts in seconds
+timeout.implicit=10
+timeout.explicit=30
+timeout.pageLoad=60
+
+# API Keys (if needed)
+api.key=YOUR_API_KEY_HERE
+```
+
+## Test Coverage
+
+### API Tests
+- `testGetUserById`: GET user berdasarkan ID
+- `testGetAllUsers`: GET semua users
+- `testCreatePost`: POST create new post
+- `testUpdatePost`: PUT update existing post
+
+### UI Tests
+- `testNavigationToExampleDomain`: Navigasi ke halaman
+- `testExampleLinks`: Verifikasi links
+- `testPageContent`: Verifikasi content halaman
+- `testPageStructure`: Verifikasi struktur halaman
 
 ## Struktur Komponen Utama
 
@@ -234,14 +312,15 @@ Menyediakan fungsionalitas umum yang digunakan oleh test:
 ### Test Layer
 
 Berisi test case aktual:
-- **ApiTest.java** - Test case untuk API
-- **UiTest.java** - Test case untuk UI Web
+- **ApiTest.java** - Test case untuk API (4 tests)
+- **UiTest.java** - Test case untuk UI Web (4 tests)
 
 ### Reporting Layer
 
 Menghasilkan laporan pengujian:
 - **Allure Reports** - Laporan visual interaktif
 - **TestNG Reports** - Laporan standar TestNG
+- **GitHub Pages** - Publikasi report online
 
 ## Troubleshooting
 
@@ -257,6 +336,12 @@ Jika test gagal di headless mode, coba:
 1. Update Chrome/ChromeDriver ke versi terbaru
 2. Tambahkan arguments tambahan di ChromeOptions
 3. Periksa log untuk error spesifik
+
+### BOM Issues
+Jika mendapat error `illegal character: '\ufeff'`:
+1. File Java tersimpan dengan BOM encoding
+2. Resave file dengan UTF-8 tanpa BOM
+3. Gunakan script cleanup yang disediakan
 
 ## Berkontribusi
 
@@ -277,3 +362,11 @@ Didistribusikan di bawah Lisensi MIT. Lihat `LICENSE` untuk informasi lebih lanj
 Azka Nur Fathoni - [@azka-art](https://github.com/azka-art)
 
 Project Link: [https://github.com/azka-art/automation-testing-framework](https://github.com/azka-art/automation-testing-framework)
+
+## Acknowledgments
+
+- [REST Assured](https://rest-assured.io/) - API Testing Framework
+- [Selenium WebDriver](https://www.selenium.dev/) - UI Testing Framework
+- [TestNG](https://testng.org/) - Test Framework
+- [Allure](https://docs.qameta.io/allure/) - Test Reporting
+- [GitHub Actions](https://github.com/features/actions) - CI/CD Platform
